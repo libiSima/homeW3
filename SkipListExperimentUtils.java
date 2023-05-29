@@ -1,6 +1,14 @@
 public class SkipListExperimentUtils {
-    public static double measureLevels(double p, int x) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+     public static double measureLevels(double p, int x) {
+        double avg = 1;
+        for (int i = 0; i < x; i = i + 1) {
+            int height = 0;
+            while (Math.random() < p) {
+                height = height + 1;
+            }
+            avg = avg + height;
+        }
+        return avg / x;
     }
 
     /*
@@ -16,11 +24,34 @@ public class SkipListExperimentUtils {
      * 6. Return the DS and the difference between the times from 3 and 5.
      */
     public static Pair<AbstractSkipList, Double> measureInsertions(double p, int size) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        AbstractSkipList skipList = new IndexableSkipList(p);
+        double alltime = 0;
+        int startine, endtime;
+        for (int i = 0; i <= size; i = i + 1) {
+            double num = Math.random();
+            int n = (int) (num * size * 2);
+            startine = (int) System.nanoTime();
+            skipList.insert(n);
+            endtime = (int) System.nanoTime();
+            alltime = alltime + (startine - endtime);
+        }
+        Pair<AbstractSkipList, Double> pair = new Pair<>(skipList, alltime / (size + 1));
+        return pair;
     }
 
     public static double measureSearch(AbstractSkipList skipList, int size) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        Random rand = new Random();
+        double alltime = 0;
+        int startine, endtime;
+        for (int i = 0; i <= size; i = i + 1) {
+            int num = rand.nextInt(size * 2);
+            startine = (int) System.nanoTime();
+            skipList.search(num);
+            endtime = (int) System.nanoTime();
+            alltime = alltime + (startine - endtime);
+        }
+        return alltime / (size + 1);
+
     }
 
     public static double measureDeletions(AbstractSkipList skipList, int size) {
