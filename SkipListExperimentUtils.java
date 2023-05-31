@@ -24,19 +24,18 @@ public class SkipListExperimentUtils {
      * 6. Return the DS and the difference between the times from 3 and 5.
      */
     public static Pair<AbstractSkipList, Double> measureInsertions(double p, int size) {
-        AbstractSkipList skipList = new IndexableSkipList(p);
-        double alltime = 0;
-        int startine, endtime;
-        for (int i = 0; i <= size; i = i + 1) {
-            double num = Math.random();
-            int n = (int) (num * size * 2);
-            startine = (int) System.nanoTime();
-            skipList.insert(n);
-            endtime = (int) System.nanoTime();
-            alltime = alltime + (startine - endtime);
+    	IndexableSkipList isl = new IndexableSkipList(p);
+    	size++;
+    	double sum = 0;
+        int[] arr = doubleArray(scrambleArray(size));
+        for (int i = 0 ; i < size ; i++)
+        {
+        	double time = System.nanoTime();
+        	isl.insert(arr[i]);
+        	time -= System.nanoTime();
+        	sum += time;
         }
-        Pair<AbstractSkipList, Double> pair = new Pair<>(skipList, alltime / (size + 1));
-        return pair;
+        return new Pair<AbstractSkipList, Double>(isl, sum/(size));
     }
 
     public static double measureSearch(AbstractSkipList skipList, int size) {
