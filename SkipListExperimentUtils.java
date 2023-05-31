@@ -41,13 +41,14 @@ public class SkipListExperimentUtils {
     public static double measureSearch(AbstractSkipList skipList, int size) {
         Random rand = new Random();
         double alltime = 0;
-        int startine, endtime;
-        for (int i = 0; i <= size; i = i + 1) {
-            int num = rand.nextInt(size * 2);
+        int startine, endtime; 
+        int[] arr = scrambleArray(size*2);
+        for (int i = 0; i < arr.length; i = i + 1) {
+            int num =arr[i];
             startine = (int) System.nanoTime();
             skipList.search(num);
             endtime = (int) System.nanoTime();
-            alltime = alltime + (startine - endtime);
+            alltime = alltime + (endtime - startine);
         }
         return alltime / (size + 1);
 
