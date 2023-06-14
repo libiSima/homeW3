@@ -41,7 +41,7 @@ public class ProbingHashTable<K, V> implements HashTable<K, V> {
     	for (int i = 0 ; i < capacity; i++) {
     		if (vals.get(h)!=null && vals.get(h).first().equals(key))
     			return vals.get(h).second();
-    		h = (int)HashingUtils.fastModularPower(((long)h+1), ((long)1), ((long)capacity));
+    		h = (h+1)%capacity;
     	}
     	return null;
     }
@@ -56,8 +56,7 @@ public class ProbingHashTable<K, V> implements HashTable<K, V> {
     				rehash();
     			return;
     		}
-    		h = (int)HashingUtils.fastModularPower(((long)h+1), ((long)1), ((long)capacity));
-    	}
+    		h = (h+1)%capacity;    	}
     }
 
     public boolean delete(K key) {
@@ -68,8 +67,7 @@ public class ProbingHashTable<K, V> implements HashTable<K, V> {
     			elements -= 1;
     			return true;
     		}
-    		h = (int)HashingUtils.fastModularPower(((long)h+1), ((long)1), ((long)capacity));
-    	}
+    		h = (h+1)%capacity;    	}
     	return false;
     }
 
