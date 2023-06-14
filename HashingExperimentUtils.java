@@ -4,7 +4,7 @@ public class HashingExperimentUtils {
     final private static int k = 16;
     public static Pair<Double, Double> measureOperationsChained(double maxLoadFactor) {
         ModularHash hash = new ModularHash();
-    	ChainedHashTable<Integer, Integer> htable = new ChainedHashTable(hash, k, maxLoadFactor);
+    	ChainedHashTable<Integer, Integer> htable = new ChainedHashTable<Integer, Integer>(hash, k, maxLoadFactor);
     	Double sumInsert = 0.0;
     	Double sumSearch = 0.0;
     	Double twoToSixteen = (1 << 16)*1.0;
@@ -64,14 +64,29 @@ public class HashingExperimentUtils {
     public static void main(String[] args) {
     	double[] probs = new double[] {0.5,0.75,0.875,0.9375};
     	double[] averageTimes = new double[] {0,0};
+    	
+    	/*
     	for (int i = 0; i < 30; i++) {
-    	for (double pr: probs)
-    	{
-    		Pair<Double, Double> p = measureOperationsProbing(pr);
-        	System.out.println(i+": "+p.first()+","+p.second());
-        	averageTimes[0] += p.first()/30;
-        	averageTimes[1] += p.second()/30;
+    		for (double pr: probs)
+    		{
+    			Pair<Double, Double> p = measureOperationsProbing(pr);
+    			System.out.println("i = "+i+". p = "+pr+": "+p.first()+","+p.second());
+    			averageTimes[0] += p.first()/30;
+    			averageTimes[1] += p.second()/30;
+    		}
     	}
+    	*/
+    	probs = new double[] {0.5,0.75,1,1.5,2};
+    	averageTimes = new double[] {0,0};
+    	System.out.println("Chained:");
+    	for (int i = 0; i < 30; i++) {
+    		for (double pr: probs)
+    		{
+    			Pair<Double, Double> p = measureOperationsChained(pr);
+    			System.out.println("i = "+i+". p = "+pr+": "+p.first()+","+p.second());
+    			averageTimes[0] += p.first()/30;
+    			averageTimes[1] += p.second()/30;
+    		}
     	}
         System.exit(1); // Remove this line
     }
