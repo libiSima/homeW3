@@ -22,6 +22,9 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
 
     public ChainedHashTable(HashFactory<K> hashFactory, int k, double maxLoadFactor) {
         hashTable = new ArrayList<LinkedList<Pair<K, V>>>(k);
+        for (LinkedList lins : hashTable) {
+            lins = new LinkedList<>();
+        }
         this.hashFactory = hashFactory;
         this.maxLoadFactor = maxLoadFactor;
         this.capacity = 1 << k;
