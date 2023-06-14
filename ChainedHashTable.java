@@ -21,13 +21,14 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
     }
 
     public ChainedHashTable(HashFactory<K> hashFactory, int k, double maxLoadFactor) {
+        this.capacity = 1 << k;
         hashTable = new ArrayList<LinkedList<Pair<K, V>>>(k);
-        for (LinkedList lins : hashTable) {
-            lins = new LinkedList<>();
+        for (int i = 0; i < capacity; i++) {
+            hashTable.add(new LinkedList<Pair<K, V>>());
         }
         this.hashFactory = hashFactory;
         this.maxLoadFactor = maxLoadFactor;
-        this.capacity = 1 << k;
+        
         this.hashFunc = hashFactory.pickHash(k);
     }
 
@@ -48,16 +49,20 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
         LinkedList listf = hashTable.get(index);
         listf.add(newp);
         n = n + 1;
-        if (n * maxLoadFactor > capacity) {
+        if (n / capacity > maxLoadFactor) {
             this.rehashing();
         }
 
     }
 
     private void rehashing() {
+    	System.out.println("Rehashing with "+capacity+" elements");
         this.hashFunc = hashFactory.pickHash(hashTable.size() * 2);
         List<LinkedList<Pair<K, V>>> oldList = this.hashTable;
         this.hashTable = new ArrayList<LinkedList<Pair<K, V>>>(hashTable.size() * 2);
+        for (int i = 0; i < capacity; i++) {
+            hashTable.add(new LinkedList<Pair<K, V>>());
+        }
         this.capacity = this.capacity * 2;
         for (List<Pair<K, V>> list : oldList) {
             for (Pair<K, V> pair : list) {
