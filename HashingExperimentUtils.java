@@ -63,7 +63,6 @@ public class HashingExperimentUtils {
 
     public static void main(String[] args) {
     	double[] probs = new double[] {0.5,0.75,0.875,0.9375};
-    	double[] averageTimes = new double[] {0,0};
     	
     	/*
     	for (int i = 0; i < 30; i++) {
@@ -77,17 +76,22 @@ public class HashingExperimentUtils {
     	}
     	*/
     	probs = new double[] {0.5,0.75,1,1.5,2};
-    	averageTimes = new double[] {0,0};
+    	double[][] averageTimes = new double[probs.length][];
+    	for (int pr = 0; pr < probs.length; pr++)
+    		averageTimes[pr]= new double[] {0,0};
     	System.out.println("Chained:");
     	for (int i = 0; i < 30; i++) {
-    		for (double pr: probs)
+    		for (int pr = 0; pr < probs.length; pr++)
     		{
-    			Pair<Double, Double> p = measureOperationsChained(pr);
-    			System.out.println("i = "+i+". p = "+pr+": "+p.first()+","+p.second());
-    			averageTimes[0] += p.first()/30;
-    			averageTimes[1] += p.second()/30;
+    			Pair<Double, Double> p = measureOperationsChained(probs[pr]);
+    			averageTimes[pr][0] += p.first()/30;
+    			averageTimes[pr][1] += p.second()/30;
     		}
     	}
+    	for (int pr = 0; pr < probs.length; pr++) {
+    		System.out.println("			 \\hline\n			 "+"$"+probs[pr]+"$ & "+averageTimes[pr][0]+" & "+averageTimes[pr][1]+ (" \\\\") );
+    	}
+    	System.out.println("			 \\hline\n");
         System.exit(1); // Remove this line
     }
 }
