@@ -7,7 +7,27 @@ public class HashingExperimentUtils {
     }
 
     public static Pair<Double, Double> measureOperationsProbing(double maxLoadFactor) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        ModularHash hash = new ModularHash();
+    	ProbingHashTable<Integer, Integer> htable = new ProbingHashTable<Integer, Integer>(hash, 16, maxLoadFactor);
+    	Double sumInsert = 0.0;
+    	Double sumSearch = 0.0;
+    	Double twoToSixteen = (1 << 16)*1.0;
+    	for (int i = 0; i < twoToSixteen*maxLoadFactor; i++)
+    	{
+    		Long toAdd = System.nanoTime();
+    		htable.insert(((int)((1<<16) * Math.random())), i);
+    		toAdd -= System.nanoTime();
+    		sumInsert += Math.abs(toAdd)/(twoToSixteen*maxLoadFactor);
+    	}
+    	for (int i = 0; i < twoToSixteen; i++)
+    	{
+    		Long toAdd = System.nanoTime();
+    		htable.search((int)((1<<16) * Math.random()));
+    		toAdd -= System.nanoTime();
+    		sumSearch += Math.abs(toAdd)/twoToSixteen;
+    	}
+    	//Test
+    	return new Pair<Double, Double>(sumInsert, sumSearch);
     }
 
     public static Pair<Double, Double> measureLongOperations() {
@@ -19,6 +39,12 @@ public class HashingExperimentUtils {
     }
 
     public static void main(String[] args) {
+    	double[] probs = new double[] {0.5,0.75,0.875,0.9375};
+    	for (double pr: probs)
+    	{
+    		Pair<Double, Double> p = measureOperationsProbing(pr);
+        	System.out.println(p.first()+","+p.second());
+    	}
         System.exit(1); // Remove this line
     }
 }
