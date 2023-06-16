@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class IndexableSkipList extends AbstractSkipList {
     final protected double probability;
 
@@ -10,17 +8,28 @@ public class IndexableSkipList extends AbstractSkipList {
 
     @Override
     public Node find(int val) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        Node node = head;
+        int level = head.height();
+        while (level >= 0) {
+            while (node.getNext(level) != tail && node.getNext(level).key() <= val)
+                node = node.getNext(level);
+            level = level - 1;
+        }
+        if (node.key() > val) {
+            node = new Node(val);
+        }
+        return node;
     }
 
     @Override
     public int generateHeight() {
-        Random random = new Random();
-        int height = 1;
-        while (random.nextDouble() < probability) {
-            height = height + 1;
+        int c = 0;
+        double roll = (Math.random());
+        while (roll < probability) {
+            c++;
+            roll = (Math.random());
         }
-        return height;
+        return c;
     }
 
     public int rank(int val) {
