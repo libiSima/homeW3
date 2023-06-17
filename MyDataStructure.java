@@ -1,5 +1,7 @@
 import java.util.List;
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MyDataStructure {
     /*
@@ -13,8 +15,14 @@ public class MyDataStructure {
      *
      * @param N The maximal number of items expected in the DS.
      */
-    public MyDataStructure(int N) {}
+    HashTable<Integer, AbstractSkipList.Node> hash;
+    IndexableSkipList skipList;
 
+    public MyDataStructure(int N) {
+        hash = new ChainedHashTable(new ModularHash());
+        skipList = new IndexableSkipList(0.5);
+    }
+        
     /*
      * In the following functions,
      * you should REMOVE the place-holder return statements.
@@ -24,15 +32,21 @@ public class MyDataStructure {
     }
 
     public boolean delete(int value) {
+        if(this.contains(value)){
+            AbstractSkipList.Node tod = hash.search(value);
+            skipList.delete(tod);
+            return true;
+        }
         return false;
     }
 
     public boolean contains(int value) {
         return false;
+
     }
 
     public int rank(int value) {
-        return -1;
+        return skipList.rank(value);
     }
 
     public int select(int index) {
@@ -40,6 +54,16 @@ public class MyDataStructure {
     }
 
     public List<Integer> range(int low, int high) {
-        return null;
+        if(! this.contains(low)){
+            return null;
+        }
+        AbstractSkipList.Node tod = hash.search(low);
+        LinkedList<Integer> ans = new LinkedList();
+        while(tod.key() <= high){
+            ans.addLast(tod.key());
+            tod.getNext(0);
+
+        }
+        return ans;
     }
 }
