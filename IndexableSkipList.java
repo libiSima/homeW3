@@ -35,9 +35,15 @@ public class IndexableSkipList extends AbstractSkipList {
     public int rank(int val) {
         int rank = 0;
         Node node = this.head;
+        int level = head.height();
         while(node.key() <= val){
-            rank = rank + node.dist.get(height);
-            node = node.getNext(node.height());
+            if(rank + node.getNext(level).dist.get(level)){
+                level = level-1;
+            }else{
+                rank = rank + node.dist.get(level);
+                node = node.getNext(level);
+            }
+            
         }
         return rank;
     }
@@ -47,9 +53,9 @@ public class IndexableSkipList extends AbstractSkipList {
         Node node = this.head;
         int level = head.height();
         while (level >= 0) {
-            while (node.getNext(level).dist.get(height)+i < index ){
+            while (node.getNext(level).dist.get(level) + i < index ){
                 node = node.getNext(level);
-                i = node.dist.get(height).
+                i = node.dist.get(level);
             }        
             level = level - 1;
         }
