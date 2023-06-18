@@ -33,10 +33,26 @@ public class IndexableSkipList extends AbstractSkipList {
     }
 
     public int rank(int val) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        int rank = 0;
+        Node node = this.head;
+        while(node.key() <= val){
+            rank = rank + node.dist.get(height);
+            node = node.getNext(node.height());
+        }
+        return rank;
     }
 
     public int select(int index) {
-        throw new UnsupportedOperationException("Replace this by your implementation");
+        int i =0;
+        Node node = this.head;
+        int level = head.height();
+        while (level >= 0) {
+            while (node.getNext(level).dist.get(height)+i < index ){
+                node = node.getNext(level);
+                i = node.dist.get(height).
+            }        
+            level = level - 1;
+        }
+        return i;
     }
 }
