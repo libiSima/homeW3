@@ -184,6 +184,46 @@ abstract public class AbstractSkipList {
         
         private void updateAndCalcDistsInsert()
         {
+        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
+        		this.dist.add(this.key == Integer.MAX_VALUE ? Integer.MAX_VALUE : 0);
+        		return;
+        	}
+        	if (height == 0) {
+        		this.dist.add(1);
+        		return;
+        	}
+        	
+        }
+        
+        /*
+        private void updateAndCalcDistsInsert()
+        {
+        	System.out.println("Node "+this.key+" Updating");
+        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
+        		this.dist.add(this.key == Integer.MAX_VALUE ? Integer.MAX_VALUE : 0);
+        		return;
+        	}
+        	if (height == 0) {
+        		this.dist.add(1);
+        		return;
+        	}
+        	System.out.println("height = "+height+" \nThis.next = "+printLst(this.next)+"\nthis.prev = "+printLst(this.prev));
+        	Node previousNode = this.getPrev(height-1); //the one before the layer we added
+        	int counter = this.dist.get(height-1);
+        	System.out.println("PreviousNode = "+previousNode.key);
+        	while (previousNode != this.prev.get(height))
+        	{
+        		counter += previousNode.dist.get(height-1);
+        		previousNode = previousNode.getPrev(height-1);
+        		System.out.println("PreviousNode = "+previousNode.key);
+        	}
+        	this.dist.add(counter);
+        	this.next.get(height-1).dist.set(height-1, this.next.get(height-1).dist.get(height-1)-counter);
+        }
+        */
+        /*
+        private void updateAndCalcDistsInsert()
+        {
         	this.dist = new ArrayList<>(height);
         	System.out.println("Node "+this.key+" Updating");
         	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
@@ -203,6 +243,7 @@ abstract public class AbstractSkipList {
         		if (this.prev.get(level) == previousNode)
         		{
         			this.dist.add(counter);
+        			next.get(level).dist.set(level, this.next.get(level).dist.get(level)-counter);
         			level++;
         		}
         		else
@@ -210,41 +251,17 @@ abstract public class AbstractSkipList {
         			counter += previousNode.dist.get(level);
         			previousNode=previousNode.getPrev(level);
         		}
-        	this.next.get(height-1).dist.set(height-1, this.next.get(height-1).dist.get(height-1)-counter);
-        }
-        /*
-        private void updateAndCalcDistsInsert()
-        {
-        	System.out.println("Node "+this.key+" Updating");
-        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
-        		this.dist.add(0);
-        		return;
-        	}
-        	if (height == 0) {
-        		this.dist.add(1);
-        		return;
-        	}
-        	System.out.println("height = "+height+" \nThis.next = "+printLst(this.next)+"\nthis.prev = "+printLst(this.prev));
-        	Node previousNode = this.getPrev(height-1); //the one before the layer we added
-        	int counter = this.dist.get(height-1);
-        	while (previousNode != prev.get(height))
-        	{
-        		counter += previousNode.dist.get(height-1);
-        		previousNode = previousNode.getPrev(height-1);
-        	}
-        	this.dist.add(counter);
-        	this.next.get(height-1).dist.set(height-1, this.next.get(height-1).dist.get(height-1)-counter);
         }
         */
 
         public int height() { return height; }
         public int key() { return key; }
         
-        private static <T> String printLst(List<T> lst)
+        private static String printLst(List<Node> lst)
         {
         	String str = "[";
-        	for (T t:lst)
-        		str += t.toString()+",";
+        	for (Node t:lst)
+        		str += t.key()+",";
         	return str+"]";
         }
         public String printAllDist()
