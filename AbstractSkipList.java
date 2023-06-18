@@ -17,7 +17,7 @@ abstract public class AbstractSkipList {
     public void increaseHeight() {
         head.addLevel(tail, null);
         tail.addLevel(null, head);
-        head.dist.add(0);
+        head.dist.add(1);
         tail.dist.add(Integer.MAX_VALUE);
     }
 
@@ -68,7 +68,7 @@ abstract public class AbstractSkipList {
         	if (prevNode == newNode.prev.get(level))
         	{
         		lst.add(counter);
-        		newNode.next.get(level).dist.set(level, newNode.next.get(level).dist.get(level)-counter);
+        		newNode.next.get(level).dist.set(level, Math.max(1,newNode.next.get(level).dist.get(level)-counter));
         		level++;
         	}
         	else
