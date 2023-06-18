@@ -20,7 +20,7 @@ public class IntegrityStatement {
          *  Large Language Models (LLMs) including ChatGPT, forums, websites, books, etc.
          *  state those here:
          *
-         *  The Presentations from the course's moodle website.
+         *  The Presentations from the course's moodle website, ChatGPT.
          */
     }
 }
