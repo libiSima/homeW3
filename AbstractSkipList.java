@@ -90,7 +90,12 @@ abstract public class AbstractSkipList {
             prev.setNext(level, next);
             next.setPrev(level, prev);
         }
-
+    	
+    	//Rank start
+    	for (int i = 0; i < node.height; i++)
+    		node.getNext(i).dist.set(i, node.getNext(i).dist.get(i) + node.dist.get(i));
+    	//Rank end
+    	
         return true;
     }
 
