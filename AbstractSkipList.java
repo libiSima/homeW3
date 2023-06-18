@@ -17,7 +17,7 @@ abstract public class AbstractSkipList {
     public void increaseHeight() {
         head.addLevel(tail, null);
         tail.addLevel(null, head);
-        head.dist.add(1);
+        head.dist.add(0);
         tail.dist.add(Integer.MAX_VALUE);
     }
 
@@ -34,7 +34,7 @@ abstract public class AbstractSkipList {
     public Node insert(int key) {
         int nodeHeight = generateHeight();
 
-        System.out.println("Height "+nodeHeight+" Generated.");
+        System.out.println("Height " + nodeHeight + " Generated.");
         while (nodeHeight > head.height()) {
             increaseHeight();
         }
@@ -57,45 +57,42 @@ abstract public class AbstractSkipList {
                 prevNode = prevNode.getPrev(level);
             }
         }
-        
-        //Ranking maintenence(?) part
+
+        // Ranking maintenence(?) part
         ArrayList<Integer> lst = new ArrayList<>();
         prevNode = newNode.prev.get(0);
         int counter = 1;
         int level = 0;
-        while (level <= nodeHeight)
-        {
-        	if (prevNode == newNode.prev.get(level))
-        	{
-        		lst.add(counter);
-        		newNode.next.get(level).dist.set(level, Math.max(1,newNode.next.get(level).dist.get(level)-counter));
-        		level++;
-        	}
-        	else
-        	{
-        		counter += prevNode.dist.get(level-1);
-        		prevNode=prevNode.prev.get(level-1);
-        	}
+        while (level <= nodeHeight) {
+            if (prevNode == newNode.prev.get(level)) {
+                lst.add(counter);
+                newNode.getNext(level).dist.set(level, newNode.getNext(level).dist.get(level));
+                level++;
+            } else {
+                counter += prevNode.dist.get(level - 1);
+                prevNode = prevNode.prev.get(level - 1);
+            }
         }
-        newNode.dist = lst;
-        //End of Rank part
         
+        while (level < newNode.getNext(level).height()) {
+            newNode.getNext(level).dist.set(level, newNode.getNext(level).dist.get(level) + 1);
+            level = level + 1;
+        }
+
+        newNode.dist = lst;
+        // End of Rank part
+
         return newNode;
     }
 
     public boolean delete(Node node) {
-    	for (int level = 0; level <= node.height(); ++level) {
+        for (int level = 0; level <= node.height(); ++level) {
             Node prev = node.getPrev(level);
             Node next = node.getNext(level);
             prev.setNext(level, next);
             next.setPrev(level, prev);
         }
-    	
-    	//Rank start
-    	for (int i = 0; i < node.height; i++)
-    		node.getNext(i).dist.set(i, node.getNext(i).dist.get(i) + node.dist.get(i));
-    	//Rank end
-    	
+
         return true;
     }
 
@@ -130,7 +127,7 @@ abstract public class AbstractSkipList {
         while (curr != tail) {
             s.append(curr.key);
             s.append("    ");
-            curr = curr.getNext(level); //ADDED AND FIXED
+            curr = curr.getNext(level); // ADDED AND FIXED
         }
 
         s.append("T\n");
@@ -146,17 +143,17 @@ abstract public class AbstractSkipList {
 
         return str.toString();
     }
-    
-    /////REMOVE THISSSSS
-    public void printAllDistances()
-    {
-    	String s = "";
-    	Node n = head;
-    	while (n != tail) {
-    		s += "("+n.key+","+n.printAllDist()+")"+", ";
-    		n=n.getNext(0);
-    	}s += "("+n.key+","+n.printAllDist()+")"+", ";
-    	System.out.println(s);
+
+    ///// REMOVE THISSSSS
+    public void printAllDistances() {
+        String s = "";
+        Node n = head;
+        while (n != tail) {
+            s += "(" + n.key + "," + n.printAllDist() + ")" + ", ";
+            n = n.getNext(0);
+        }
+        s += "(" + n.key + "," + n.printAllDist() + ")" + ", ";
+        System.out.println(s);
     }
 
     public static class Node {
@@ -211,23 +208,27 @@ abstract public class AbstractSkipList {
             this.next.add(next);
             this.prev.add(prev);
         }
-        
-        public int height() { return height; }
-        public int key() { return key; }
-        
-        private static String printLst(List<Node> lst)
-        {
-        	String str = "[";
-        	for (Node t:lst)
-        		str += t.key()+",";
-        	return str+"]";
+
+        public int height() {
+            return height;
         }
-        public String printAllDist()
-        {
-        	String str = "[";
-        	for (int t:dist)
-        		str += t+",";
-        	return str+"]";
+
+        public int key() {
+            return key;
+        }
+
+        private static String printLst(List<Node> lst) {
+            String str = "[";
+            for (Node t : lst)
+                str += t.key() + ",";
+            return str + "]";
+        }
+
+        public String printAllDist() {
+            String str = "[";
+            for (int t : dist)
+                str += t + ",";
+            return str + "]";
         }
     }
 }
