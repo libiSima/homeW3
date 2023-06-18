@@ -9,12 +9,16 @@ abstract public class AbstractSkipList {
     public AbstractSkipList() {
         head = new Node(Integer.MIN_VALUE);
         tail = new Node(Integer.MAX_VALUE);
+        head.dist = new ArrayList<>();
+        tail.dist = new ArrayList<>();
         increaseHeight();
     }
 
     public void increaseHeight() {
         head.addLevel(tail, null);
         tail.addLevel(null, head);
+        head.dist.add(0);
+        tail.dist.add(Integer.MAX_VALUE);
     }
 
     abstract Node find(int key);
@@ -53,7 +57,29 @@ abstract public class AbstractSkipList {
                 prevNode = prevNode.getPrev(level);
             }
         }
-
+        
+        //Ranking maintenence(?) part
+        ArrayList<Integer> lst = new ArrayList<>();
+        prevNode = newNode.prev.get(0);
+        int counter = 1;
+        int level = 0;
+        while (level <= nodeHeight)
+        {
+        	if (prevNode == newNode.prev.get(level))
+        	{
+        		lst.add(counter);
+        		newNode.next.get(level).dist.set(level, newNode.next.get(level).dist.get(level)-counter);
+        		level++;
+        	}
+        	else
+        	{
+        		counter += prevNode.dist.get(level-1);
+        		prevNode=prevNode.prev.get(level-1);
+        	}
+        }
+        newNode.dist = lst;
+        //End of Rank part
+        
         return newNode;
     }
 
@@ -124,7 +150,7 @@ abstract public class AbstractSkipList {
     	while (n != tail) {
     		s += "("+n.key+","+n.printAllDist()+")"+", ";
     		n=n.getNext(0);
-    	}
+    	}s += "("+n.key+","+n.printAllDist()+")"+", ";
     	System.out.println(s);
     }
 
@@ -179,81 +205,8 @@ abstract public class AbstractSkipList {
             ++height;
             this.next.add(next);
             this.prev.add(prev);
-            this.updateAndCalcDistsInsert();
         }
         
-        private void updateAndCalcDistsInsert()
-        {
-        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
-        		this.dist.add(this.key == Integer.MAX_VALUE ? Integer.MAX_VALUE : 0);
-        		return;
-        	}
-        	if (height == 0) {
-        		this.dist.add(1);
-        		return;
-        	}
-        	
-        }
-        
-        /*
-        private void updateAndCalcDistsInsert()
-        {
-        	System.out.println("Node "+this.key+" Updating");
-        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
-        		this.dist.add(this.key == Integer.MAX_VALUE ? Integer.MAX_VALUE : 0);
-        		return;
-        	}
-        	if (height == 0) {
-        		this.dist.add(1);
-        		return;
-        	}
-        	System.out.println("height = "+height+" \nThis.next = "+printLst(this.next)+"\nthis.prev = "+printLst(this.prev));
-        	Node previousNode = this.getPrev(height-1); //the one before the layer we added
-        	int counter = this.dist.get(height-1);
-        	System.out.println("PreviousNode = "+previousNode.key);
-        	while (previousNode != this.prev.get(height))
-        	{
-        		counter += previousNode.dist.get(height-1);
-        		previousNode = previousNode.getPrev(height-1);
-        		System.out.println("PreviousNode = "+previousNode.key);
-        	}
-        	this.dist.add(counter);
-        	this.next.get(height-1).dist.set(height-1, this.next.get(height-1).dist.get(height-1)-counter);
-        }
-        */
-        /*
-        private void updateAndCalcDistsInsert()
-        {
-        	this.dist = new ArrayList<>(height);
-        	System.out.println("Node "+this.key+" Updating");
-        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
-        		for (int i = 0; i < height; i++)
-        			this.dist.add(this.key == Integer.MAX_VALUE ? Integer.MAX_VALUE : 0);
-        		return;
-        	}
-        	if (height == 0) {
-        		this.dist.add(1);
-        		return;
-        	}
-        	System.out.println("height = "+height+" \nThis.next = "+printLst(this.next)+"\nthis.prev = "+printLst(this.prev));
-        	Node previousNode = this.getPrev(0);
-        	int counter = 1;
-        	int level = 0;
-        	while (level < height)
-        		if (this.prev.get(level) == previousNode)
-        		{
-        			this.dist.add(counter);
-        			next.get(level).dist.set(level, this.next.get(level).dist.get(level)-counter);
-        			level++;
-        		}
-        		else
-        		{
-        			counter += previousNode.dist.get(level);
-        			previousNode=previousNode.getPrev(level);
-        		}
-        }
-        */
-
         public int height() { return height; }
         public int key() { return key; }
         
