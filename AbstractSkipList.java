@@ -23,12 +23,14 @@ abstract public class AbstractSkipList {
 
     public Node search(int key) {
         Node curr = find(key);
+
         return curr.key() == key ? curr : null;
     }
 
     public Node insert(int key) {
         int nodeHeight = generateHeight();
 
+        System.out.println("Height "+nodeHeight+" Generated.");
         while (nodeHeight > head.height()) {
             increaseHeight();
         }
@@ -56,7 +58,7 @@ abstract public class AbstractSkipList {
     }
 
     public boolean delete(Node node) {
-        for (int level = 0; level <= node.height(); ++level) {
+    	for (int level = 0; level <= node.height(); ++level) {
             Node prev = node.getPrev(level);
             Node next = node.getNext(level);
             prev.setNext(level, next);
@@ -97,6 +99,7 @@ abstract public class AbstractSkipList {
         while (curr != tail) {
             s.append(curr.key);
             s.append("    ");
+            curr = curr.getNext(level); //ADDED AND FIXED
         }
 
         s.append("T\n");
@@ -112,18 +115,32 @@ abstract public class AbstractSkipList {
 
         return str.toString();
     }
+    
+    /////REMOVE THISSSSS
+    public void printAllDistances()
+    {
+    	String s = "";
+    	Node n = head;
+    	while (n != tail) {
+    		s += "("+n.key+","+n.printAllDist()+")"+", ";
+    		n=n.getNext(0);
+    	}
+    	System.out.println(s);
+    }
 
     public static class Node {
         final private List<Node> next;
         final private List<Node> prev;
         private int height;
         final private int key;
+        protected ArrayList<Integer> dist;
 
         public Node(int key) {
             next = new ArrayList<>();
             prev = new ArrayList<>();
             this.height = -1;
             this.key = key;
+            dist = new ArrayList<>();
         }
 
         public Node getPrev(int level) {
@@ -162,14 +179,80 @@ abstract public class AbstractSkipList {
             ++height;
             this.next.add(next);
             this.prev.add(prev);
+            this.updateAndCalcDistsInsert();
         }
-
-        public int height() {
-            return height;
+        
+        private void updateAndCalcDistsInsert()
+        {
+        	this.dist = new ArrayList<>(height);
+        	System.out.println("Node "+this.key+" Updating");
+        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
+        		for (int i = 0; i < height; i++)
+        			this.dist.add(this.key == Integer.MAX_VALUE ? Integer.MAX_VALUE : 0);
+        		return;
+        	}
+        	if (height == 0) {
+        		this.dist.add(1);
+        		return;
+        	}
+        	System.out.println("height = "+height+" \nThis.next = "+printLst(this.next)+"\nthis.prev = "+printLst(this.prev));
+        	Node previousNode = this.getPrev(0);
+        	int counter = 1;
+        	int level = 0;
+        	while (level < height)
+        		if (this.prev.get(level) == previousNode)
+        		{
+        			this.dist.add(counter);
+        			level++;
+        		}
+        		else
+        		{
+        			counter += previousNode.dist.get(level);
+        			previousNode=previousNode.getPrev(level);
+        		}
+        	this.next.get(height-1).dist.set(height-1, this.next.get(height-1).dist.get(height-1)-counter);
         }
+        /*
+        private void updateAndCalcDistsInsert()
+        {
+        	System.out.println("Node "+this.key+" Updating");
+        	if (this.key == Integer.MIN_VALUE || this.key == Integer.MAX_VALUE) {
+        		this.dist.add(0);
+        		return;
+        	}
+        	if (height == 0) {
+        		this.dist.add(1);
+        		return;
+        	}
+        	System.out.println("height = "+height+" \nThis.next = "+printLst(this.next)+"\nthis.prev = "+printLst(this.prev));
+        	Node previousNode = this.getPrev(height-1); //the one before the layer we added
+        	int counter = this.dist.get(height-1);
+        	while (previousNode != prev.get(height))
+        	{
+        		counter += previousNode.dist.get(height-1);
+        		previousNode = previousNode.getPrev(height-1);
+        	}
+        	this.dist.add(counter);
+        	this.next.get(height-1).dist.set(height-1, this.next.get(height-1).dist.get(height-1)-counter);
+        }
+        */
 
-        public int key() {
-            return key;
+        public int height() { return height; }
+        public int key() { return key; }
+        
+        private static <T> String printLst(List<T> lst)
+        {
+        	String str = "[";
+        	for (T t:lst)
+        		str += t.toString()+",";
+        	return str+"]";
+        }
+        public String printAllDist()
+        {
+        	String str = "[";
+        	for (int t:dist)
+        		str += t+",";
+        	return str+"]";
         }
     }
 }
