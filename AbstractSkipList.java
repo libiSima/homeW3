@@ -96,7 +96,6 @@ abstract public class AbstractSkipList {
             } else {
                 t = 1;
             }
-
         }
 
         newNode.dist = lst;
@@ -112,9 +111,45 @@ abstract public class AbstractSkipList {
             prev.setNext(level, next);
             next.setPrev(level, prev);
         }
-
+        int level = node.height();
+        Node next = node.getNext(level);
+        int t = 0;
+        while (t == 0 && level <= head.height) {
+            if (next.height > level) {
+                int i;
+                for (i = level + 1; next.height >= i; i++) {
+                	next.dist.set(i, next.dist.get(i) - 1);
+                }
+                level = i - 1;
+            }
+            if (next.height < head.height) {
+            	next = next.getNext(level);
+            } else {
+                t = 1;
+            }
+        }
         return true;
     }
+    /*
+     * Node next = node.getNext(0);
+        int i = 0;
+        for ( ; i < node.height; i++)
+        {
+        	next = node.getNext(i);
+        	next.dist.set(i, (node.dist.get(i)-1)+next.dist.get(i));
+        }
+        while (i < head.height)
+        {
+        	if (next.height > i) {
+        		next.dist.set(i, (node.dist.get(Math.max(0,node.height-1))-1)+next.dist.get(i));
+        		i++;
+        	}
+        	else
+        	{
+        		next = next.next.get(Math.max(0, i-1));
+        	}
+        }
+     */
 
     public int predecessor(Node node) {
         return node.getPrev(0).key();
