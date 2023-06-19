@@ -75,19 +75,28 @@ abstract public class AbstractSkipList {
         }
         level = 0;
         Node nextNode = newNode.getNext(level);
-        while (level < Math.min(newNode.height(),newNode.getNext(level).height())) {
-        	nextNode.dist.set(level, 1);
+        while (level < Math.min(newNode.height(), newNode.getNext(level).height())) {
+            nextNode.dist.set(level, 1);
             nextNode = newNode.getNext(level);
             level = level + 1;
         }
-        while (level < head.height() && nextNode != tail) {
-        	if (nextNode.height() > level) {
-        		nextNode.dist.set(level, nextNode.dist.get(level) + 1);
-            	level = level + 1;
-        	}
-            else {
-            	nextNode = nextNode.getNext(level);
+        level = newNode.height();
+        nextNode = newNode.getNext(level);
+        int t = 0;
+        while (t == 0 && level <= head.height) {
+            if (nextNode.height > level) {
+                int i;
+                for (i = level + 1; nextNode.height >= i; i++) {
+                    nextNode.dist.set(i, nextNode.dist.get(i) + 1);
+                }
+                level = i - 1;
             }
+            if (nextNode.height < head.height) {
+                nextNode = nextNode.getNext(level);
+            } else {
+                t = 1;
+            }
+
         }
 
         newNode.dist = lst;
