@@ -33,8 +33,6 @@ abstract public class AbstractSkipList {
 
     public Node insert(int key) {
         int nodeHeight = generateHeight();
-
-        System.out.println("Height " + nodeHeight + " Generated.");
         while (nodeHeight > head.height()) {
             increaseHeight();
         }
