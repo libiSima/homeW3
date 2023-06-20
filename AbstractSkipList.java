@@ -116,7 +116,7 @@ abstract public class AbstractSkipList {
             if (next.height > level) {
                 int i;
                 for (i = level + 1; next.height >= i; i++) {
-                	next.dist.set(i, next.dist.get(i) - 1);
+                	next.dist.set(i, next.dist.get(i) + (node.dist.get(Math.min(Math.max(node.height()-1,0), i))) -2);
                 }
                 level = i - 1;
             }
@@ -197,18 +197,6 @@ abstract public class AbstractSkipList {
         return str.toString();
     }
 
-    ///// REMOVE THISSSSS
-    public void printAllDistances() {
-        String s = "";
-        Node n = head;
-        while (n != tail) {
-            s += "(" + n.key + "," + n.printAllDist() + ")" + ", ";
-            n = n.getNext(0);
-        }
-        s += "(" + n.key + "," + n.printAllDist() + ")" + ", ";
-        System.out.println(s);
-    }
-
     public static class Node {
         final private List<Node> next;
         final private List<Node> prev;
@@ -268,20 +256,6 @@ abstract public class AbstractSkipList {
 
         public int key() {
             return key;
-        }
-
-        private static String printLst(List<Node> lst) {
-            String str = "[";
-            for (Node t : lst)
-                str += t.key() + ",";
-            return str + "]";
-        }
-
-        public String printAllDist() {
-            String str = "[";
-            for (int t : dist)
-                str += t + ",";
-            return str + "]";
         }
     }
 }
