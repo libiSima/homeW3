@@ -18,15 +18,6 @@ public class ModularHash implements HashFactory<Integer> {
         public int hash(Integer key) {
         	return (int)HashingUtils.fastModularPower(HashingUtils.fastModularPower( (((long)a)*((long)key)+(long)b) ,(long)1,p),(long)1,(long)m);
         }
-        
-        public int hash(String str) {
-        	int sum = 0;
-        	for (int i = 0; i < str.length(); i++)
-        	{
-        		sum = (int)HashingUtils.fastModularPower((int)str.charAt(i) + HashingUtils.fastModularPower(256, i, Integer.MAX_VALUE), (long)1, (long)Integer.MAX_VALUE);
-        	}
-        	return hash(sum);
-        }
 
         public int a() {
             return a;
