@@ -22,7 +22,7 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
 
     public ChainedHashTable(HashFactory<K> hashFactory, int k, double maxLoadFactor) {
         this.capacity = 1 << k;
-        hashTable = new ArrayList<LinkedList<Pair<K, V>>>(k);
+        hashTable = new ArrayList<LinkedList<Pair<K, V>>>(capacity);
         for (int i = 0; i < capacity; i++) {
             hashTable.add(new LinkedList<Pair<K, V>>());
         }
@@ -36,7 +36,7 @@ public class ChainedHashTable<K, V> implements HashTable<K, V> {
         int index = hashFunc.hash(key);
         List<Pair<K, V>> listf = hashTable.get(index);
         for (Pair<K, V> pair : listf) {
-            if (pair.first() == key) {
+            if (pair.first().equals(key)) {
                 return pair.second();
             }
         }
