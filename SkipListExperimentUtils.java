@@ -106,6 +106,5 @@ public class SkipListExperimentUtils {
     		System.out.println(isl.toString());
     		System.out.println(measureDeletions(isl, size));
     	}
-        System.exit(1); // Remove this line.
     }
 }
