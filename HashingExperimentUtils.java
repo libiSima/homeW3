@@ -174,6 +174,5 @@ public class HashingExperimentUtils {
     		System.out.println("			 \\hline\n			 "+"$"+probs[pr]+"$ & "+averageTimes[pr][0]+" & "+averageTimes[pr][1]+ (" \\\\") );
     	}
     	System.out.println("			 \\hline\n");
-        System.exit(1); // Remove this line
     }
 }
